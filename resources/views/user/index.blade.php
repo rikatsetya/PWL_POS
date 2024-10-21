@@ -109,8 +109,7 @@
                     "render": function(data) {
                             // Check if data exists
                             if (data) {
-                                // Construct the image URL using Blade syntax
-                                return '<img src=" {{ asset('data') }} " width="50px"/>';
+                                return '<img src="{{ asset('') }}/' + data + '" width="50px" alt="User Photo"/>';
                             }
                             return 'Foto Kosong'; // Return empty if no data
                         
