@@ -105,7 +105,9 @@
                                         title: 'Berhasil',
                                         text: response.message
                                     });
-                                    profile.ajax.reload();
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 2000);
                                 } else {
                                     $('.error-text').text('');
                                     $.each(response.msgField, function(prefix, val) {

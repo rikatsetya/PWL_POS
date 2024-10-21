@@ -66,23 +66,5 @@
                 $('#myModal').modal('show');
             });
         }
-        var profile;
-        $(document).ready(function() {
-            profile = $('#profile').load({
-                autoWidth: false,
-                serverSide: true,
-                ajax: {
-                    "url": "{{ url('penjualan/list') }}",
-                    "dataType": "json",
-                    "type": "POST",
-                    "data": function(d) {
-                        d.user_id = $('#user_id').val();
-                    }
-                },
-            });
-            $('#profile').on('change', function() {
-                profile.ajax.reload();
-            });
-        });
     </script>
 @endpush
