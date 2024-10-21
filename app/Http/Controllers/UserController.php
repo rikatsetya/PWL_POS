@@ -249,19 +249,26 @@ class UserController extends Controller
                 if (!$request->filled('password')) { // jika password tidak diisi, maka hapus dari request
                     $request->request->remove('password');
                 }
-                if ($request->has('foto')) {
+                if (isset($check->foto)) {
+                    $fileold = $check->foto;
+                    if (Storage::disk('public')->exists($fileold)) {
+                        Storage::disk('public')->delete($fileold);
+                    }
                     $file = $request->file('foto');
-                    $extension = $file->getClientOriginalExtension();
-
-                    $filename = time() . '.' . $extension;
-
+                    $filename = $check->foto;
                     $path = 'image/profile/';
                     $file->move($path, $filename);
-                }
-                // $fileName = time() . $request->file('foto')->getClientOriginalExtension();
-                // $path = $request->file('foto')->storeAs('images', $fileName);
-                // $request['foto'] = '/storage/' . $path;
+                    $pathname = $filename;
+                } else {
+                        $file = $request->file('foto');
+                        $extension = $file->getClientOriginalExtension();
 
+                        $filename = time() . '.' . $extension;
+
+                        $path = 'image/profile/';
+                        $file->move($path, $filename);
+                        $pathname = $path . $filename;
+                    }
                 if (!$request->filled('foto')) { // jika password tidak diisi, maka hapus dari request 
                     $request->request->remove('foto');
                 }
@@ -271,7 +278,7 @@ class UserController extends Controller
                     'nama'      => $request->nama,
                     'password'  => $request->password ? bcrypt($request->password) : UserModel::find($id)->password,
                     'level_id'  => $request->level_id,
-                    'foto'      => $path.$filename
+                    'foto'      => $pathname
                 ]);
                 return response()->json([
                     'status' => true,

@@ -35,7 +35,7 @@
                     </tr>
                     <tr>
                         <th>foto</th>
-                        <td><img src=" {{ asset($user->foto) }} " height="100"></td>
+                        <td><img src=" {{ asset($user->foto) }} " height="100" alt="Foto Kosong"></td>
                     </tr>
                 </table>
             @endempty

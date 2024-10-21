@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
@@ -22,7 +23,7 @@ class ProfileController extends Controller
         $activeMenu = 'profile'; // set menu yang sedang aktif
         $user = UserModel::with('level')->find($id);
         $level = LevelModel::all(); // ambil data level untuk filter level
-        return view('profile.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level, 'user' => $user,'activeMenu' => $activeMenu]);
+        return view('profile.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'level' => $level, 'user' => $user, 'activeMenu' => $activeMenu]);
     }
 
     public function show(string $id)
@@ -98,7 +99,7 @@ class ProfileController extends Controller
     {
         $user = UserModel::find($id);
         $level = LevelModel::select('level_id', 'level_nama')->get();
-        return view('profile.edit_foto', ['user' => $user, 'level'=>$level]);
+        return view('profile.edit_foto', ['user' => $user, 'level' => $level]);
     }
 
     public function update_foto(Request $request, $id)
@@ -120,16 +121,30 @@ class ProfileController extends Controller
             $check = UserModel::find($id);
             if ($check) {
                 if ($request->has('foto')) {
-                    $file = $request->file('foto');
-                    $extension = $file->getClientOriginalExtension();
 
-                    $filename = time() . '.' . $extension;
+                    if (isset($check->foto)) {
+                        $fileold = $check->foto;
+                        if (Storage::disk('public')->exists($fileold)) {
+                            Storage::disk('public')->delete($fileold);
+                        }
+                        $file = $request->file('foto');
+                        $filename = $check->foto;
+                        $path = 'image/profile/';
+                        $file->move($path, $filename);
+                        $pathname = $filename;
+                    } else {
+                        $file = $request->file('foto');
+                        $extension = $file->getClientOriginalExtension();
 
-                    $path = 'image/profile/';
-                    $file->move($path, $filename);
+                        $filename = time() . '.' . $extension;
+
+                        $path = 'image/profile/';
+                        $file->move($path, $filename);
+                        $pathname = $path . $filename;
+                    }
                 }
                 $check->update([
-                    'foto'      => $path.$filename
+                    'foto'      => $pathname
                 ]);
                 return response()->json([
                     'status' => true,
@@ -144,5 +159,4 @@ class ProfileController extends Controller
         }
         return redirect('/');
     }
-
 }

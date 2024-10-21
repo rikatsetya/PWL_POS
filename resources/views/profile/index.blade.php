@@ -68,7 +68,7 @@
         }
         var profile;
         $(document).ready(function() {
-            profile = $('#profile').on({
+            profile = $('#profile').load({
                 autoWidth: false,
                 serverSide: true,
                 ajax: {
