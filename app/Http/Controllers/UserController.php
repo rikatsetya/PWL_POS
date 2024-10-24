@@ -249,17 +249,24 @@ class UserController extends Controller
                 if (!$request->filled('password')) { // jika password tidak diisi, maka hapus dari request
                     $request->request->remove('password');
                 }
+                if (!$request->filled('foto')) { // jika password tidak diisi, maka hapus dari request 
+                    $request->request->remove('foto');
+                }
                 if (isset($check->foto)) {
                     $fileold = $check->foto;
                     if (Storage::disk('public')->exists($fileold)) {
                         Storage::disk('public')->delete($fileold);
                     }
-                    $file = $request->file('foto');
-                    $filename = $check->foto;
-                    $path = 'image/profile/';
-                    $file->move($path, $filename);
-                    $pathname = $filename;
+                    if ($request->has('foto')) {
+                        $file = $request->file('foto');
+                        $filename = $check->foto;
+                        $path = 'image/profile/';
+                        $file->move($path, $filename);
+                        $pathname = $filename;
+                        $request['foto']= $pathname;
+                    }
                 } else {
+                    if ($request->has('foto')) {
                         $file = $request->file('foto');
                         $extension = $file->getClientOriginalExtension();
 
@@ -268,18 +275,17 @@ class UserController extends Controller
                         $path = 'image/profile/';
                         $file->move($path, $filename);
                         $pathname = $path . $filename;
+                        $request['foto']= $pathname;
                     }
-                if (!$request->filled('foto')) { // jika password tidak diisi, maka hapus dari request 
-                    $request->request->remove('foto');
                 }
+                $check->update($request->all());
 
-                $check->update([
-                    'username'  => $request->username,
-                    'nama'      => $request->nama,
-                    'password'  => $request->password ? bcrypt($request->password) : UserModel::find($id)->password,
-                    'level_id'  => $request->level_id,
-                    'foto'      => $pathname
-                ]);
+                // $check->update([
+                //     'username'  => $request->username,
+                //     'nama'      => $request->nama,
+                //     'password'  => $request->password ? bcrypt($request->password) : UserModel::find($id)->password,
+                //     'level_id'  => $request->level_id
+                // ]);
                 return response()->json([
                     'status' => true,
                     'message' => 'Data berhasil diupdate'
