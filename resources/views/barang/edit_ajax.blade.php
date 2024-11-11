@@ -39,8 +39,8 @@
                         </div>
                         <div class="form-group">
                             <label>Barang Kode</label>
-                            <input value="{{ $barang->barang_kode }}" type="text" name="barang_kode" id="barang_kode"
-                                class="form-control" required>
+                            <input placeholder="{{ $barang->barang_kode }}" type="text" name="barang_kode" id="barang_kode"
+                                class="form-control">
                             <small id="error-barang_kode" class="error-text form-text text-danger"></small>
                         </div>
                         <div class="form-group">
@@ -61,6 +61,14 @@
                                 class="form-control" required>
                             <small id="error-harga_jual" class="error-text form-text text-danger"></small>
                         </div>
+                        <div class="form-group">
+                            <label>Foto</label>
+                            <input type="file" name="image" id="image" class="form-control"
+                                accept=".png,.jpg,.jpeg">
+                            <small class="form-text text-muted">Abaikan jika tidak ingin ubah
+                                foto</small>
+                            <small id="error-image" class="error-text form-text text-danger"></small>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
@@ -78,7 +86,7 @@
                             number: true
                         },
                         barang_kode: {
-                            required: true,
+                            required: false,
                             minlength: 3,
                             maxlength: 20
                         },
@@ -94,7 +102,10 @@
                         harga_jual: {
                             required: true,
                             minlength: 3,
-                        }
+                        },
+                        image: {
+                            accept: "png,jpg,jpeg"
+                        },
                     },
                     submitHandler: function(form) {
                         $.ajax({

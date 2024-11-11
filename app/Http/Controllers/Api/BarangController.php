@@ -43,25 +43,32 @@ class BarangController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $image = $request->image;
+        $file = $request->file('image');
+        $extension = $file->getClientOriginalExtension();
+
+        $filename = time() . '.' . $extension;
+
+        $path = 'image/barang/';
+        $file->move($path, $filename);
+
         $barang = BarangModel::create([
             'kategori_id'   => $request->kategori_id,
             'barang_kode'   => $request->barang_kode,
             'barang_nama'   => $request->barang_nama,
             'harga_beli'    => $request->harga_beli,
             'harga_jual'    => $request->harga_jual,
-            'image'         => $image->hashName()
+            'image'         => $path . $filename
         ]);
         if ($barang) {
             return response()->json([
                 'success'   => true,
                 'barang'      => $barang,
-            ],201);
+            ], 201);
         }
 
         return response()->json([
             'success'   => false,
-        ],409);
+        ], 409);
     }
 
     /**
