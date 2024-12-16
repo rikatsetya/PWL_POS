@@ -36,16 +36,36 @@ class DetailController extends Controller
         ]);
     }
 
+    // public function list(Request $request)
+    // {
+    //     $detail = DetailModel::select('detail_id', 'penjualan_id', 'barang_id', 'harga', 'jumlah')
+    //         ->with('barang')
+    //         ->with('penjualan');
+
+    //     if ($request->barang_id) {
+    //         $detail->where('barang_id', $request->barang_id);
+    //     }
+
+    //     return DataTables::of($detail)
+    //         ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex) 
+    //         ->addColumn('aksi', function ($detail) { // menambahkan kolom aksi 
+    //             $btn = '<a href="' . url('/detail/' . $detail->detail_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+    //             // $btn .= '<button onclick="modalAction(\'' . url('/detail/' . $detail->detail_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+    //             $btn .= '<a onclick="modalAction(\'' . url('/detail/' . $detail->detail_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</a> ';
+    //             $btn .= '<button onclick="modalAction(\'' . url('/detail/' . $detail->detail_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
+    //             return $btn;
+    //         })
+    //         ->rawColumns(['aksi']) // memberitahu bahwa kolom aksi adalah html 
+    //         ->make(true);
+    // }
     public function list(Request $request)
     {
         $detail = DetailModel::select('detail_id', 'penjualan_id', 'barang_id', 'harga', 'jumlah')
             ->with('barang')
             ->with('penjualan');
-
         if ($request->barang_id) {
             $detail->where('barang_id', $request->barang_id);
         }
-
         return DataTables::of($detail)
             ->addIndexColumn() // menambahkan kolom index / no urut (default nama kolom: DT_RowIndex) 
             ->addColumn('aksi', function ($detail) { // menambahkan kolom aksi 
